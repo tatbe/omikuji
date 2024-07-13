@@ -27,11 +27,19 @@ animation: ${props => (props.shake ? 'shake 1.8s' : 'none')};
 `;
 
 const Button = styled.img`
-  position: absolute;
-  width: 100%;
-  max-width: 400px;
-  height: auto;
-  cursor: pointer;
+position: absolute;
+top: 0px;
+bottom: -60%;
+width: 80%;
+max-width: 300px;
+height: auto;
+cursor: pointer;
+margin: auto;
+transition: transform 0.2s;
+
+&:active {
+  transform: scale(0.97);
+}
 `;
 
 // オーバーレイを中央から広がるようにアニメーションさせる
@@ -44,8 +52,8 @@ const Overlay = styled.div`
   background: rgba(255, 255, 255, 1);
   z-index: 1000;
   border-radius: 50%; // 中央から円形に広がるようにする
-  animation: expand 2.0s forwards; // 1秒かけて広がるアニメーション
-  box-shadow: 0px 0px 40px 40px rgb(255 255 255);
+  animation: expand 2.0s forwards; // 2秒かけて広がるアニメーション
+  box-shadow: 0px 0px 70px 70px rgb(255 255 255);
 `;
 
 const ResultImage = styled.img`
@@ -54,7 +62,13 @@ const ResultImage = styled.img`
   height: auto;
   position: absolute;
   z-index: 1001;
-  animation: slidein 3.5s;
+  //animation: slidein 3.5s;
+  transform: translate(0, -100%);
+
+  &.slidein {
+    transition: transform 3.5s ease-in-out;
+    transform: translate(0, 0%);
+  }
 `;
 
 function App() {
@@ -62,6 +76,7 @@ function App() {
   const [showOverlay, setShowOverlay] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [shake, setShake] = useState(false);
+  const [isSlidIn, setIsSlidIn] = useState(false);
 
   const handleButtonClick = () => {
     setShake(true);
@@ -72,11 +87,13 @@ function App() {
       const randomIndex = Math.floor(Math.random() * results.length);
       setResult(results[randomIndex]);
       setShowOverlay(true);
+      setShowResult(true);
 
       // おみくじ表示
       setTimeout(() => {
-        setShowResult(true);
-      }, 2300); 
+        
+        setIsSlidIn(true);
+      }, 1000); 
     }, 1500); 
   };
 
@@ -91,7 +108,7 @@ function App() {
       )}
       {showResult && (
         <>
-          <ResultImage src={`/images/${result}`} alt="おみくじの結果" />
+          <ResultImage src={`/images/${result}`} alt="おみくじの結果" className={isSlidIn ? 'slidein' : ''} />
         </>
       )}
     </AppContainer>
