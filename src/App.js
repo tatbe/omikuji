@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import './App.css';
-
-const results = [
-  'result_daikiti.png',
-  'result_kyo.png',
-  'result_syokiti.png',
-  'result_tyukiti.png',
-];
+import Cookies from "js-cookie";
 
 const AppContainer = styled.div`
   background: url('/images/bg.png') no-repeat center center fixed;
@@ -21,25 +15,25 @@ const AppContainer = styled.div`
 `;
 
 const Box = styled.img`
-width: 100%;
-max-width: 400px;
-animation: ${props => (props.shake ? 'shake 1.8s' : 'none')};
+  width: 100%;
+  max-width: 400px;
+  animation: ${props => (props.shake ? 'shake 1.8s' : 'none')};
 `;
 
 const Button = styled.img`
-position: absolute;
-top: 0px;
-bottom: -60%;
-width: 80%;
-max-width: 300px;
-height: auto;
-cursor: pointer;
-margin: auto;
-transition: transform 0.2s;
+  position: absolute;
+  top: 0px;
+  bottom: -60%;
+  width: 80%;
+  max-width: 300px;
+  height: auto;
+  cursor: pointer;
+  margin: auto;
+  transition: transform 0.2s;
 
-&:active {
-  transform: scale(0.97);
-}
+  &:active {
+    transform: scale(0.97);
+  }
 `;
 
 // オーバーレイを中央から広がるようにアニメーションさせる
@@ -71,6 +65,13 @@ const ResultImage = styled.img`
   }
 `;
 
+const results = [
+  'daikiti',
+  'kyo',
+  'syokiti',
+  'tyukiti',
+];
+
 function App() {
   const [result, setResult] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -78,14 +79,32 @@ function App() {
   const [shake, setShake] = useState(false);
   const [isSlidIn, setIsSlidIn] = useState(false);
 
+  // おみくじを抽選、または今日の結果を取得
+  const getTodaysOmikuji = () => {
+    const today = new Date().toISOString().split("T")[0];
+    const savedOmikuji = Cookies.get("omikujiResult");
+    const savedDate = Cookies.get("omikujiDate");
+
+    if (savedOmikuji && savedDate === today) {
+      return savedOmikuji;
+    } else {
+      const randomIndex = Math.floor(Math.random() * results.length);
+      const newResult = results[randomIndex];
+      Cookies.set("omikujiResult", newResult, { expires: 1 });
+      Cookies.set("omikujiDate", today, { expires: 1 });
+      return newResult;
+    }
+  };
+
   const handleButtonClick = () => {
     setShake(true);
 
     // 震えるアニメーションの後に実行
     setTimeout(() => {
       setShake(false);
-      const randomIndex = Math.floor(Math.random() * results.length);
-      setResult(results[randomIndex]);
+      // おみくじを抽選、または今日の結果を取得
+      const omikujiResult = getTodaysOmikuji();
+      setResult(omikujiResult);
       setShowOverlay(true);
       setShowResult(true);
 
@@ -108,7 +127,7 @@ function App() {
       )}
       {showResult && (
         <>
-          <ResultImage src={`/images/${result}`} alt="おみくじの結果" className={isSlidIn ? 'slidein' : ''} />
+          <ResultImage src={`/images/result_${result}.png`} alt="おみくじの結果" className={isSlidIn ? 'slidein' : ''} />
         </>
       )}
     </AppContainer>
