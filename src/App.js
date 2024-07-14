@@ -4,7 +4,7 @@ import './App.css';
 import Cookies from "js-cookie";
 
 const AppContainer = styled.div`
-  background: url('/images/bg.png') no-repeat center center fixed;
+  background: url('${process.env.PUBLIC_URL}/images/bg.png') no-repeat center center fixed;
   background-size: contain;
   height: 100vh;
   display: flex;
@@ -36,7 +36,6 @@ const Button = styled.img`
   }
 `;
 
-// オーバーレイを中央から広がるようにアニメーションさせる
 const Overlay = styled.div`
   position: fixed;
   top: 50%;
@@ -45,8 +44,8 @@ const Overlay = styled.div`
   height: 0;
   background: rgba(255, 255, 255, 1);
   z-index: 1000;
-  border-radius: 50%; // 中央から円形に広がるようにする
-  animation: expand 2.0s forwards; // 2秒かけて広がるアニメーション
+  border-radius: 50%;
+  animation: expand 2.0s forwards;
   box-shadow: 0px 0px 70px 70px rgb(255 255 255);
 `;
 
@@ -56,7 +55,6 @@ const ResultImage = styled.img`
   height: auto;
   position: absolute;
   z-index: 1001;
-  //animation: slidein 3.5s;
   transform: translate(0, -100%);
 
   &.slidein {
@@ -79,7 +77,6 @@ function App() {
   const [shake, setShake] = useState(false);
   const [isSlidIn, setIsSlidIn] = useState(false);
 
-  // おみくじを抽選、または今日の結果を取得
   const getTodaysOmikuji = () => {
     const today = new Date().toISOString().split("T")[0];
     const savedOmikuji = Cookies.get("omikujiResult");
@@ -99,18 +96,14 @@ function App() {
   const handleButtonClick = () => {
     setShake(true);
 
-    // 震えるアニメーションの後に実行
     setTimeout(() => {
       setShake(false);
-      // おみくじを抽選、または今日の結果を取得
       const omikujiResult = getTodaysOmikuji();
       setResult(omikujiResult);
       setShowOverlay(true);
       setShowResult(true);
 
-      // おみくじ表示
       setTimeout(() => {
-        
         setIsSlidIn(true);
       }, 1000); 
     }, 1500); 
@@ -118,17 +111,15 @@ function App() {
 
   return (
     <AppContainer>
-      <Box src="/images/box.png" shake={shake} />
-      <Button src="/images/button.png" onClick={handleButtonClick} />
-      {showOverlay && (
-        <>
-          <Overlay />
-        </>
-      )}
+      <Box src={`${process.env.PUBLIC_URL}/images/box.png`} shake={shake} />
+      <Button src={`${process.env.PUBLIC_URL}/images/button.png`} onClick={handleButtonClick} />
+      {showOverlay && <Overlay />}
       {showResult && (
-        <>
-          <ResultImage src={`/images/result_${result}.png`} alt="おみくじの結果" className={isSlidIn ? 'slidein' : ''} />
-        </>
+        <ResultImage
+          src={`${process.env.PUBLIC_URL}/images/result_${result}.png`}
+          alt="おみくじの結果"
+          className={isSlidIn ? 'slidein' : ''}
+        />
       )}
     </AppContainer>
   );
