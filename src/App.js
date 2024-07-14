@@ -54,10 +54,11 @@ const ResultImage = styled.img`
   max-width: 400px;
   height: auto;
   position: absolute;
-  z-index: 1001;
+  z-index: -1;
   transform: translate(0, -100%);
 
   &.slidein {
+    z-index: 1001;
     transition: transform 3.5s ease-in-out;
     transform: translate(0, 0%);
   }
