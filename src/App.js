@@ -78,6 +78,12 @@ function App() {
   const [shake, setShake] = useState(false);
   const [isSlidIn, setIsSlidIn] = useState(false);
 
+  const getTomorrowMidnight = () => {
+    const now = new Date();
+    const tomorrowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    return tomorrowMidnight;
+  };
+  
   const getTodaysOmikuji = () => {
     const today = new Date().toISOString().split("T")[0];
     const savedOmikuji = Cookies.get("omikujiResult");
@@ -88,8 +94,9 @@ function App() {
     } else {
       const randomIndex = Math.floor(Math.random() * results.length);
       const newResult = results[randomIndex];
-      Cookies.set("omikujiResult", newResult, { expires: 1 });
-      Cookies.set("omikujiDate", today, { expires: 1 });
+      const expires = getTomorrowMidnight();
+      Cookies.set("omikujiResult", newResult, { expires });
+      Cookies.set("omikujiDate", today, { expires });
       return newResult;
     }
   };
