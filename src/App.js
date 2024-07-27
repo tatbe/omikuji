@@ -51,7 +51,7 @@ const Overlay = styled.div`
 
 const ResultImage = styled.img`
   width: 100%;
-  max-width: 400px;
+  max-width: 430px;
   height: auto;
   position: absolute;
   z-index: -1;
