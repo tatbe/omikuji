@@ -55,7 +55,7 @@ const ResultImage = styled.img`
   height: auto;
   position: absolute;
   z-index: -1;
-  transform: translate(0, -100%);
+  transform: translate(0, -50%);
 
   &.slidein {
     z-index: 1001;
